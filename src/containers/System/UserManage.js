@@ -1,33 +1,50 @@
-import React, { Component } from 'react';
-import { FormattedMessage } from 'react-intl';
-import { connect } from 'react-redux';
-class UserManage extends Component {
+import React, { useEffect } from "react";
+import { connect } from "react-redux";
+import "./Usermanager.scss";
+import { getAlluser } from "../../routes/services/userServiec";
+import { useState } from "react";
 
-    state = {
+const UserManage = () => {
+  const [value, setValue] = useState();
 
-    }
-
-    componentDidMount() {
-
-    }
-
-
-    render() {
-        return (
-            <div className="text-center">Manage users</div>
-        );
-    }
-
-}
-
-const mapStateToProps = state => {
-    return {
+  useEffect(() => {
+    const awaits = async () => {
+      const responsave = await getAlluser("All");
+      console.log(responsave);
+      if (responsave && responsave.errCode === 0) {
+        setValue(responsave.allUser);
+      }
     };
+    awaits();
+  }, []);
+  return (
+    <table className="mt-3 pd-1" id="customers">
+      <tr>
+        <th>email</th>
+        <th>fistname</th>
+        <th>lastname</th>
+        <th>action</th>
+      </tr>
+      {value &&
+        value.map((item) => (
+          <tr>
+            <td>{item.email}</td>
+            <td>{item.firstName}</td>
+            <td>{item.lastName}</td>
+            <button>edit</button>
+            <button>delete</button>
+          </tr>
+        ))}
+    </table>
+  );
 };
 
-const mapDispatchToProps = dispatch => {
-    return {
-    };
+const mapStateToProps = (state) => {
+  return {};
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {};
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserManage);
